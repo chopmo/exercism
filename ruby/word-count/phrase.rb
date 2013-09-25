@@ -5,12 +5,12 @@ class PhraseParser
   end
 
   def words
-    text.split(non_word_pattern)
+    text.scan(word_pattern)
   end
 
   private
-  def non_word_pattern
-    /\W+/
+  def word_pattern
+    /\w+/
   end
 end
 
@@ -32,10 +32,6 @@ class WordCounter
 end
 
 class Phrase
-  attr_reader :phrase_parser
-  attr_reader :word_normalizer
-  attr_reader :word_counter
-
   def initialize(text)
     @phrase_parser = PhraseParser.new(text)
     @word_normalizer = DowncasingWordNormalizer.new
@@ -47,6 +43,10 @@ class Phrase
   end
 
   private
+  attr_reader :phrase_parser
+  attr_reader :word_normalizer
+  attr_reader :word_counter
+
   def build_word_counts
     phrase_parser.words.each do |word|
       normalized_word = word_normalizer.normalize(word)
