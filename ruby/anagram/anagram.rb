@@ -1,27 +1,33 @@
 class Anagram
   def initialize(word)
-    @word = word.downcase
+    @subject_word = Word.new(word)
   end
 
   def match(words)
-    words.select { |word| anagram?(word) }
+    words.select { |word| @subject_word.anagram_of?(word) }
+  end
+end
+
+class Word
+  attr_reader :word
+  def initialize(word)
+    @word = word.downcase
+  end
+
+  def anagram_of?(other)
+    same_letters_as?(other.downcase) && !same_word_as?(other.downcase)
+  end
+
+  def same_letters_as?(other)
+    sorted_letters(word) == sorted_letters(other)
+  end
+
+  def same_word_as?(other)
+    word == other
   end
 
   private
-  def anagram?(other)
-    same_letters?(@word, other.downcase) && !same_word?(@word, other.downcase)
-  end
-
-  def same_letters?(word1, word2)
-    sorted_letters(word1) == sorted_letters(word2)
-  end
-
-  def same_word?(word1, word2)
-    word1 == word2
-  end
-
   def sorted_letters(s)
     s.split(//).sort
   end
 end
-
