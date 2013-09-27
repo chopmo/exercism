@@ -4,7 +4,9 @@ class Anagram
   end
 
   def match(words)
-    words.select { |word| WordComparison.new(word, @subject_word).anagrams? }
+    words.select { |word|
+      WordComparison.new(word, @subject_word).anagrams?
+    }
   end
 end
 
@@ -29,12 +31,11 @@ class WordComparison
     word1 == word2
   end
 
-  private
   def normalize(word)
     word.downcase
   end
 
-  def sorted_letters(s)
-    s.split(//).sort
+  def sorted_letters(text)
+    text.split(//).sort
   end
 end
