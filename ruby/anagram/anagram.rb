@@ -15,7 +15,7 @@ class WordComparison
   end
 
   def anagrams?
-    same_letters? && !same_word?
+    same_letters? and not same_word?
   end
 
   private
@@ -30,11 +30,11 @@ class WordComparison
   end
 
   private
-  def sorted_letters(s)
-    s.split(//).sort
-  end
-
   def normalize(word)
     word.downcase
+  end
+
+  def sorted_letters(s)
+    s.split(//).sort
   end
 end
