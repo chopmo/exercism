@@ -1,41 +1,39 @@
 class Anagram
   def initialize(word)
-    @subject_word = word
+    @subject_word = Word.new(word)
   end
 
   def match(words)
     words.select { |word|
-      WordComparison.new(word, @subject_word).anagrams?
+      Word.new(word).anagram_of?(@subject_word)
     }
   end
 end
 
-class WordComparison
-  def initialize(word1, word2)
-    @word1 = normalize(word1)
-    @word2 = normalize(word2)
+class Word
+  def initialize(text)
+    @text = text
   end
 
-  def anagrams?
-    same_letters? and not same_word?
+  def anagram_of?(other)
+    w1 = downcase
+    w2 = other.downcase
+
+    (w1.to_alphagram == w2.to_alphagram) && (w1 != w2)
   end
 
-  private
-  attr_reader :word1, :word2
+  protected
+  attr_reader :text
 
-  def same_letters?
-    sorted_letters(word1) == sorted_letters(word2)
+  def downcase
+    self.class.new(text.downcase)
   end
 
-  def same_word?
-    word1 == word2
+  def ==(other)
+    text == other.text
   end
 
-  def normalize(word)
-    word.downcase
-  end
-
-  def sorted_letters(text)
-    text.split(//).sort
+  def to_alphagram
+    text.chars.sort.join('')
   end
 end
