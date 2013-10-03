@@ -11,19 +11,13 @@ class Phrase
   attr_reader :text
 
   def build_word_counts
-    counts = Hash.new { 0 }
-    normalized_words.each do |word|
+    words.each_with_object(Hash.new(0)) do |word, counts|
       counts[word] += 1
     end
-    counts
-  end
-
-  def normalized_words
-    words.map { |word| word.downcase }
   end
 
   def words
-    text.scan(word_pattern)
+    text.downcase.scan(word_pattern)
   end
 
   def word_pattern
@@ -77,19 +71,13 @@ class Phrase
   attr_reader :text
 
   def build_word_counts
-    counts = Hash.new { 0 }
-    normalized_words.each do |word|
+    words.each_with_object(Hash.new(0)) do |word, counts|
       counts[word] += 1
     end
-    counts
-  end
-
-  def normalized_words
-    words.map { |word| word.downcase }
   end
 
   def words
-    text.scan(word_pattern)
+    text.downcase.scan(word_pattern)
   end
 
   def word_pattern
