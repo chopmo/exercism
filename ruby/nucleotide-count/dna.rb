@@ -9,14 +9,13 @@ module Symbols
 end
 
 class DNA
-  extend Symbols
   include Symbols
 
   attr_reader :sequence
 
   def initialize(symbols)
     @sequence = Sequence.new(symbols)
-    raise ArgumentError unless @sequence.valid_dna?
+    raise ArgumentError unless valid_sequence?
   end
 
   def count(symbol)
@@ -29,29 +28,35 @@ class DNA
     end
   end
 
-  def self.valid_nucleotide?(nucleotide)
+  private
+  def valid_sequence?
+    sequence.nucleotides.all? { |n| valid_nucleotide?(n) }
+  end
+
+  def valid_nucleotide?(nucleotide)
     dna_symbols.include?(nucleotide.symbol)
   end
 end
 
 class Sequence
-  attr_reader :nucleotides
+  attr_reader :symbols
 
   def initialize(symbols)
-    @nucleotides = symbols.chars.map { |symbol| Nucleotide.new(symbol) }
+    @symbols = symbols
   end
 
   def count(symbol)
     nucleotides.count(Nucleotide.new(symbol))
   end
 
-  def valid_dna?
-    nucleotides.all? { |n| DNA.valid_nucleotide?(n) }
+  def nucleotides
+    symbols.chars.map { |symbol| Nucleotide.new(symbol) }
   end
 end
 
 class Nucleotide
   include Symbols
+
   attr_reader :symbol
 
   def initialize(symbol)
