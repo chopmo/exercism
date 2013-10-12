@@ -1,60 +1,71 @@
-class DNA
-  def initialize(symbols)
-    @sequence = build_sequence(symbols)
-    raise ArgumentError unless valid_dna_sequence?
-  end
-
-  def count(symbol)
-    nucleotide = make_nucleotide(symbol)
-    sequence.count(nucleotide)
-  end
-
-  def nucleotide_counts
-    counts = dna_symbols.map { |symbol| count(symbol) }
-    Hash[dna_symbols.zip(counts)]
-  end
-
-  private
-  attr_reader :sequence
-
-  def build_sequence(symbols)
-    symbols.chars.map { |symbol| make_nucleotide(symbol) }
-  end
-
-  def valid_dna_sequence?
-    sequence.all?(&:valid_in_dna?)
-  end
-
-  def make_nucleotide(symbol)
-    Nucleotide.new(symbol)
+module Symbols
+  def all_symbols
+    %w(A T C G U)
   end
 
   def dna_symbols
-    Nucleotide::DNA_SYMBOLS
+    all_symbols - %w(U)
+  end
+end
+
+class DNA
+  extend Symbols
+  include Symbols
+
+  attr_reader :sequence
+
+  def initialize(symbols)
+    @sequence = Sequence.new(symbols)
+    raise ArgumentError unless @sequence.valid_dna?
+  end
+
+  def count(symbol)
+    sequence.count(symbol)
+  end
+
+  def nucleotide_counts
+    dna_symbols.each_with_object({}) do |symbol, counts|
+      counts[symbol] = count(symbol)
+    end
+  end
+
+  def self.valid_nucleotide?(nucleotide)
+    dna_symbols.include?(nucleotide.symbol)
+  end
+end
+
+class Sequence
+  attr_reader :nucleotides
+
+  def initialize(symbols)
+    @nucleotides = symbols.chars.map { |symbol| Nucleotide.new(symbol) }
+  end
+
+  def count(symbol)
+    nucleotides.count(Nucleotide.new(symbol))
+  end
+
+  def valid_dna?
+    nucleotides.all? { |n| DNA.valid_nucleotide?(n) }
   end
 end
 
 class Nucleotide
+  include Symbols
+  attr_reader :symbol
+
   def initialize(symbol)
     @symbol = symbol
     raise ArgumentError unless valid_symbol?
-  end
-
-  def valid_in_dna?
-    DNA_SYMBOLS.include?(symbol)
   end
 
   def ==(other)
     symbol == other.symbol
   end
 
-  SYMBOLS = %w(A T C G U)
-  DNA_SYMBOLS = SYMBOLS - %w(U)
-
   protected
-  attr_reader :symbol
-
   def valid_symbol?
-    SYMBOLS.include?(symbol)
+    all_symbols.include?(symbol)
   end
 end
+
