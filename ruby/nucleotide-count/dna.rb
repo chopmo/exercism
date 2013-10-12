@@ -1,16 +1,16 @@
 module Symbols
-  def all_symbols
+  module_function
+
+  def all
     %w(A T C G U)
   end
 
-  def dna_symbols
-    all_symbols - %w(U)
+  def dna
+    all - %w(U)
   end
 end
 
 class DNA
-  include Symbols
-
   attr_reader :sequence
 
   def initialize(symbols)
@@ -23,7 +23,7 @@ class DNA
   end
 
   def nucleotide_counts
-    dna_symbols.each_with_object({}) do |symbol, counts|
+    Symbols.dna.each_with_object({}) do |symbol, counts|
       counts[symbol] = count(symbol)
     end
   end
@@ -34,7 +34,7 @@ class DNA
   end
 
   def valid_nucleotide?(nucleotide)
-    dna_symbols.include?(nucleotide.symbol)
+    Symbols.dna.include?(nucleotide.symbol)
   end
 end
 
@@ -55,8 +55,6 @@ class Sequence
 end
 
 class Nucleotide
-  include Symbols
-
   attr_reader :symbol
 
   def initialize(symbol)
@@ -70,7 +68,7 @@ class Nucleotide
 
   protected
   def valid_symbol?
-    all_symbols.include?(symbol)
+    Symbols.all.include?(symbol)
   end
 end
 
