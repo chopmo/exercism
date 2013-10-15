@@ -1,4 +1,4 @@
-module Symbols
+module Nucleobases
   module_function
 
   def all
@@ -23,7 +23,7 @@ class DNA
   end
 
   def nucleotide_counts
-    Symbols.dna.each_with_object({}) do |symbol, counts|
+    Nucleobases.dna.each_with_object({}) do |symbol, counts|
       counts[symbol] = count(symbol)
     end
   end
@@ -34,7 +34,7 @@ class DNA
   end
 
   def valid_nucleotide?(nucleotide)
-    Symbols.dna.include?(nucleotide.symbol)
+    Nucleobases.dna.include?(nucleotide.symbol)
   end
 end
 
@@ -68,7 +68,7 @@ class Nucleotide
 
   protected
   def valid_symbol?
-    Symbols.all.include?(symbol)
+    Nucleobases.all.include?(symbol)
   end
 end
 
